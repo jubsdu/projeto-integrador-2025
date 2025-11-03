@@ -1,1 +1,67 @@
+from flask import Flask, request, jsonify, render_template
+import os
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from Modelo import Medicos, Pacientes, Consultas
 
+load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+engine = create_engine(DATABASE_URL)
+Session = sessionmaker(bind=engine)
+
+app = Flask(__name__)
+
+#gerencia as sessoes do banco
+def get_db_session():
+    return Session()
+
+#pag inicial
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+#pag consultas
+@app.route('/api/consultas')
+def consultas():
+    session = get_db_session()
+    try:
+        #busca todas as consultas no banco
+        consultas = session.query(Consultas).all()
+        return render_template('consultas.html')
+    except Exception as e:
+        return render_template('consultas.html', error=str(e))
+    finally:
+        session.close()
+
+#pag cadastro
+@app.route('/api/cadastros')
+def cadastros():
+    session = get_db_session()
+    try:
+        #busca os medicos e pacientes no banco
+        medicos = session.query(Medicos).all()
+        pacientes = session.query(Pacientes).all()
+        return render_template('cadastro.html')
+    except Exception as e:
+        return render_template('cadastro.html', error=str(e))
+    finally:
+        session.close()
+
+#pag de agendamento
+@app.route('/api/agendamentos')
+def agendamentos():
+    session = get_db_session()
+    try:
+        #busca os dados para o agendamento
+        medicos = session.query(Medicos).all()
+        pacientes = session.query(Pacientes).all()
+        return render_template('agendamentos.html')
+    except Exception as e:
+        return render_template('agendamentos.html', error=str(e))
+    finally:
+        session.close()
+
+if __name__ == '__main__':
+    app.run(debug=True)
