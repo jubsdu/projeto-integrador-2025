@@ -1,1 +1,23 @@
+from flask import Flask, request, jsonify, render_template #importa o render por causa do html
+#cria a aplicacao Flask
+app= Flask (__name__)
+#rota q renderiza a pag HTML
+@app.route('/')
+def home():
+    return render_template('index.html') #renderiza o arquivo templates/index.html
+#rota da API q faz a soma 
+@app.route('/api/consultas')
+def consultas():
+    return render_template('consultas.html')
 
+@app.route('/api/cadastros')
+def cadastros():
+    return render_template('cadastro.html')
+
+@app.route('/api/agendamentos')
+def agendamentos():
+    return render_template('agendamentos.html')
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
