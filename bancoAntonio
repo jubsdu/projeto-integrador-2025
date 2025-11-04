@@ -10,7 +10,7 @@ Base = declarative_base()
 class Medicos(Base):
   __tablename__ = 'Medicos'
 
-  id = Column(Integer, primary_key=True, autoincrement=True)
+  id_consulta = Column(Integer, primary_key=True, autoincrement=True)
   nome = Column(String(100), nullable=False)
   especialidade = Column(String(100), nullable=False)
   telefone = Column(String(20))
@@ -22,7 +22,7 @@ class Medicos(Base):
 class Pacientes(Base):
   __tablename__ = 'Pacientes'
 
-  id = Column(Integer, primary_key=True, autoincrement=True)
+  id_consulta = Column(Integer, primary_key=True, autoincrement=True)
   nome = Column(String(100), nullable=False)
   data_nascimento = Column(Date)
   telefone = Column(String(20))
@@ -34,7 +34,7 @@ class Pacientes(Base):
 class Consultas(Base):
     __tablename__ = 'Consultas'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id_consulta = Column(Integer, primary_key=True, autoincrement=True)
     id_paciente = Column(Integer, ForeignKey('Pacientes.id'), nullable=False)
     id_medico = Column(Integer, ForeignKey('Medicos.id'), nullable=False)
     data_consulta = Column(Date, nullable=False)
