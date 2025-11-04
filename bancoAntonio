@@ -17,7 +17,7 @@ class Medicos(Base):
   email = Column(String(100), unique=True)
 
   # Relacionamento: um médico pode ter várias consultas
-  Consulta = relationship("Consultas", back_populates="Medicos")
+  Consultas = relationship("Consultas", back_populates="Medicos")
 
 class Pacientes(Base):
   __tablename__ = 'Pacientes'
@@ -53,7 +53,7 @@ import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
-from Modelo import Consultas,Medicos,Pacientes,Base  # certifique-se que a classe Alunos está importada
+from Modelo import Consultas,Medicos,Pacientes,Base  
 
 # Carrega variáveis de ambiente
 load_dotenv()
