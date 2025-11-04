@@ -1,5 +1,5 @@
 # projeto-integrador-2025
-Integrantes: Antonio Carlos[Disponivel](n4), Isadora Maria(n20), Júlia Serafim(n25), Luiz Antonio(28) e Nathalia Fernandes(n34)
+Integrantes: Antonio Carlos{Disponivel}(n4), Isadora Maria(n20), Júlia Serafim(n25), Luiz Antonio(28) e Nathalia Fernandes(n34)
 
 # Equipe de desenvolvimento
 • Tech Lead: Júlia Serafim Duarte | Coordenação técnica, integração das partes, revisão de código e versionamento do GitHub
