@@ -5,34 +5,41 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
-# Importa os modelos
+# importa os modelos
 from Modelo import Medicos, Pacientes, Base
 
-# Carrega variáveis do .env
+# carrega as variáveis do arquivo .env
 load_dotenv()
 
+# cria o app flask
 app = Flask(__name__)
+# libera o acesso da api para outros sistemas
 CORS(app)
 
-# String de conexão do .env (ex.: mssql+pyodbc://sa:SENHA@localhost/EscolaDB?driver=ODBC+Driver+17+for+SQL+Server)
+# pega o endereço do banco que está no arquivo .env
+# exemplo: mssql+pyodbc://usuario:senha@localhost/nomedobanco?driver=ODBC+Driver+17+for+SQL+Server
 DATABASE_URL = os.environ["DATABASE_URL"]
 
-# Engine para SQL Server
+# cria a conexão com o banco de dados
 engine = create_engine(DATABASE_URL, pool_pre_ping=True, fast_executemany=True)
 
-# Criação da sessão
+# cria a sessão para fazer ações no banco
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# rota principal que mostra se o serviço está funcionando
 @app.get("/")
 def health():
     return {"ok": True, "service": "api-consultas"}, 200
 
 
-# ----------------- ROTAS MÉDICOS -----------------
+# ----------------- rotas de médicos -----------------
 @app.get("/medicos")
 def listar_medicos():
+    # abre uma sessão no banco
     with SessionLocal() as session:
+        # busca todos os médicos
         medicos = session.query(Medicos).all()
+        # transforma os dados em uma lista simples
         dados = [
             {
                 "id": m.id,
@@ -42,11 +49,13 @@ def listar_medicos():
                 "email": m.email
             } for m in medicos
         ]
+        # devolve os dados no formato json
         return jsonify(dados), 200
 
 
 @app.post("/medicos")
 def criar_medico():
+    # pega os dados enviados no corpo da requisição
     data = request.get_json(force=True)
 
     nome = data.get("nome")
@@ -54,9 +63,11 @@ def criar_medico():
     telefone = data.get("telefone")
     email = data.get("email")
 
+    # verifica se os campos obrigatórios foram enviados
     if not nome or not especialidade:
-        return jsonify({"error": "Campos 'nome' e 'especialidade' são obrigatórios"}), 400
+        return jsonify({"error": "campos 'nome' e 'especialidade' são obrigatórios"}), 400
 
+    # cria o novo médico e salva no banco
     with SessionLocal() as session:
         novo = Medicos(
             nome=nome,
@@ -68,6 +79,7 @@ def criar_medico():
         session.commit()
         session.refresh(novo)
 
+        # devolve o médico criado como resposta
         return jsonify({
             "id": novo.id,
             "nome": novo.nome,
@@ -77,11 +89,14 @@ def criar_medico():
         }), 201
 
 
-# ----------------- ROTAS PACIENTES -----------------
+# ----------------- rotas de pacientes -----------------
 @app.get("/pacientes")
 def listar_pacientes():
+    # abre uma sessão no banco
     with SessionLocal() as session:
+        # busca todos os pacientes
         pacientes = session.query(Pacientes).all()
+        # transforma os dados em uma lista simples
         dados = [
             {
                 "id": p.id,
@@ -91,8 +106,10 @@ def listar_pacientes():
                 "email": p.email
             } for p in pacientes
         ]
+        # devolve os dados no formato json
         return jsonify(dados), 200
 
 
+# executa o servidor flask
 if __name__ == "__main__":
     app.run(debug=True)
