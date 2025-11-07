@@ -5,63 +5,78 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from Modelo import Medicos, Pacientes, Consultas
 
+# carrega as variáveis do arquivo .env
 load_dotenv()
 
+# pega o endereço do banco de dados
 DATABASE_URL = os.getenv("DATABASE_URL")
+
+# cria a conexão com o banco
 engine = create_engine(DATABASE_URL)
+
+# cria a sessão para acessar o banco
 Session = sessionmaker(bind=engine)
 
+# cria o app flask
 app = Flask(__name__)
 
-#gerencia as sessoes do banco
+# função que cria e devolve uma nova sessão do banco
 def get_db_session():
     return Session()
 
-#pag inicial
+# página inicial do site
 @app.route('/')
 def home():
     return render_template('index.html')
 
-#pag consultas
+# página de consultas
 @app.route('/api/consultas')
 def consultas():
     session = get_db_session()
     try:
-        #busca todas as consultas no banco
+        # busca todas as consultas no banco
         consultas = session.query(Consultas).all()
         return render_template('consultas.html')
     except Exception as e:
+        # se der erro, mostra a página com a mensagem de erro
         return render_template('consultas.html', error=str(e))
     finally:
+        # fecha a sessão do banco
         session.close()
 
-#pag cadastro
+# página de cadastros
 @app.route('/api/cadastros')
 def cadastros():
     session = get_db_session()
     try:
-        #busca os medicos e pacientes no banco
+        # busca todos os médicos e pacientes no banco
         medicos = session.query(Medicos).all()
         pacientes = session.query(Pacientes).all()
         return render_template('cadastro.html')
     except Exception as e:
+        # se der erro, mostra a página com a mensagem de erro
         return render_template('cadastro.html', error=str(e))
     finally:
+        # fecha a sessão do banco
         session.close()
 
-#pag de agendamento
+# página de agendamentos
 @app.route('/api/agendamentos')
 def agendamentos():
     session = get_db_session()
     try:
-        #busca os dados para o agendamento
+        # busca os dados de médicos e pacientes para o agendamento
         medicos = session.query(Medicos).all()
         pacientes = session.query(Pacientes).all()
         return render_template('agendamentos.html')
     except Exception as e:
+        # se der erro, mostra a página com a mensagem de erro
         return render_template('agendamentos.html', error=str(e))
     finally:
+        # fecha a sessão do banco
         session.close()
 
+# roda o servidor flask em modo de teste
 if __name__ == '__main__':
     app.run(debug=True)
+
