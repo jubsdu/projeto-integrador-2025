@@ -1,4 +1,4 @@
---------index.html (ta com erro na hora de redirecionar para as outras rotas) -------------------------
+--------------- index(arrumado)-------------
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -289,13 +289,13 @@ body.dark .hero h1, body.dark .hero p { color: white; }
 <header>
     <div class="container_1">
         <h2><i class="fa-solid fa-heart-pulse"></i> Dr.Saúde</h2>
-        <button id="menu-toggle"><i class="fa-solid fa-bars"></i></button> <!-- Botão do menu mobile -->
+ 
         <nav id="menu">
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Agendar Consultas</a></li>
-                <li><a href="#">Minhas Consultas</a></li>
-                <li><a href="#">Cadastro/Login</a></li>
+               <li><a href="index.html">Home</a></li>
+               <li><a href="agendamento.html">Agendar Consultas</a></li>
+               <li><a href="consultas.html">Minhas Consultas</a></li>
+               <li><a href="cadastro.html">Cadastro/Login</a></li>
             </ul>
         </nav>
         <button id="dark-mode-toggle" title="Alternar modo escuro">
@@ -308,10 +308,7 @@ body.dark .hero h1, body.dark .hero p { color: white; }
     <div class="hero-content">
         <h1>Saúde de Qualidade ao Seu Alcance</h1>
         <p>Conecte-se com os melhores profissionais e agende sua consulta de forma rápida e segura.</p>
-        <form class="search-box">
-            <input type="text" placeholder="Buscar especialidade..." required>
-            <button type="submit">Buscar</button>
-        </form>
+       
         <a href="#" class="btn">Agendar Consulta</a>
     </div>
 </section>
@@ -382,10 +379,7 @@ body.dark .hero h1, body.dark .hero p { color: white; }
 </footer>
 
 <script>
-// Toggle menu mobile
-document.getElementById('menu-toggle').addEventListener('click', () => {
-    document.getElementById('menu').classList.toggle('open');
-});
+
 
 // Rotação automática de depoimentos
 const testimonials = document.querySelectorAll('.testimonial');
@@ -400,7 +394,37 @@ setInterval(() => {
 document.getElementById('dark-mode-toggle').addEventListener('click', () => {
     document.body.classList.toggle('dark');
 });
-</script>
 
+// ===== ANIMAÇÃO SUAVE DE SAÍDA =====
+function fadeOutAndRedirect(url) {
+    document.body.style.transition = 'opacity 0.5s ease';
+    document.body.style.opacity = '0';
+    setTimeout(() => {
+        window.location.assign(url); // redireciona com garantia
+    }, 500);
+}
+
+// ===== REDIRECIONAMENTOS =====
+
+// Botão principal da seção hero
+const agendarBtn = document.querySelector('.hero .btn');
+if (agendarBtn) {
+    agendarBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        fadeOutAndRedirect('agendamento.html');
+    });
+}
+
+// Links do menu de navegação
+document.querySelectorAll('nav ul li a').forEach(link => {
+    link.addEventListener('click', (e) => {
+        const destino = e.target.getAttribute('href');
+        if (destino && destino !== '#') {
+            e.preventDefault();
+            fadeOutAndRedirect(destino);
+        }
+    });
+});
+</script>
 </body>
 </html>
