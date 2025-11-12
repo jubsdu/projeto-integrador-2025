@@ -1,94 +1,52 @@
-from sqlalchemy import Column, Integer, String, Date, Time, Text, ForeignKey, create_engine
-from sqlalchemy.orm import declarative_base, relationship, sessionmaker
-
-# cria a base para os modelos do banco de dados
-Base = declarative_base()
-
-# tabela de médicos
-class Medicos(Base):
-  __tablename__ = 'Medicos'
-
-  # id principal, criado automaticamente
-  id_consulta = Column(Integer, primary_key=True, autoincrement=True)
-  # nome do médico, campo obrigatório
-  nome = Column(String(100), nullable=False)
-  # especialidade do médico, campo obrigatório
-  especialidade = Column(String(100), nullable=False)
-  # telefone do médico
-  telefone = Column(String(20))
-  # e-mail do médico, não pode repetir
-  email = Column(String(100), unique=True)
-
-  # um médico pode ter várias consultas
-  Consultas = relationship("Consultas", back_populates="Medicos")
-
-# tabela de pacientes
-class Pacientes(Base):
-  __tablename__ = 'Pacientes'
-
-  # id principal, criado automaticamente
-  id_consulta = Column(Integer, primary_key=True, autoincrement=True)
-  # nome do paciente, campo obrigatório
-  nome = Column(String(100), nullable=False)
-  # data de nascimento do paciente
-  data_nascimento = Column(Date)
-  # telefone do paciente
-  telefone = Column(String(20))
-  # e-mail do paciente
-  email = Column(String(100))
-
-  # um paciente pode ter várias consultas
-  Consultas = relationship("Consultas", back_populates="Pacientes")
-
-# tabela de consultas
-class Consultas(Base):
-    __tablename__ = 'Consultas'
-
-    # id principal, criado automaticamente
-    id_consulta = Column(Integer, primary_key=True, autoincrement=True)
-    # id do paciente que faz a consulta
-    id_paciente = Column(Integer, ForeignKey('Pacientes.id'), nullable=False)
-    # id do médico que faz a consulta
-    id_medico = Column(Integer, ForeignKey('Medicos.id'), nullable=False)
-    # data da consulta
-    data_consulta = Column(Date, nullable=False)
-    # hora da consulta
-    hora_consulta = Column(Time, nullable=False)
-    # descrição da consulta
-    descricao = Column(Text)
-    # status da consulta, com valor padrão 'agendada'
-    status = Column(String(50), default='Agendada')
-
-    # ligação entre as tabelas de pacientes e médicos
-    Pacientes = relationship("Pacientes", back_populates="Consultas")
-    Medicos = relationship("Medicos", back_populates="Consultas")
--------------------------------------------------------------------------------------
-arquivo que Cria Tabelas
-
-import os
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
-from Modelo import Consultas, Medicos, Pacientes, Base  
 
-# carrega as variáveis que estão no arquivo .env
+from sqlalchemy import Column, Integer, String, Date, Time, Text, create_engine,ForeignKey, create_engine
+import os
+from sqlalchemy.orm import declarative_base,relationship, sessionmaker
 load_dotenv()
 
-# pega o endereço do banco de dados das variáveis de ambiente
+
 DATABASE_URL = os.getenv("DATABASE_URL")
+engine = create_engine(DATABASE_URL, pool_pre_ping=True, fast_executemany=True)
 
-# cria a conexão com o banco de dados
-engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(bind=engine)
+Base = declarative_base()
 
-# cria as tabelas no banco se ainda não existirem
+# MODELS --------------------------------------------------
+
+class Medicos(Base):
+    __tablename__ = "medicos"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nome = Column(String(100), nullable=False)
+    especialidade = Column(String(100), nullable=False)
+    telefone = Column(String(20))
+    email = Column(String(100))
+    consultas = relationship("Consultas", back_populates="medico")
+
+class Pacientes(Base):
+    __tablename__ = "pacientes"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nome = Column(String(100), nullable=False)
+    data_nascimento = Column(Date, nullable=False)
+    telefone = Column(String(20))
+    email = Column(String(100))
+    consultas = relationship("Consultas", back_populates="paciente")
+
+class Consultas(Base):
+    __tablename__ = "consultas"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    data = Column(Date, nullable=False)
+    horario = Column(Time, nullable=False)
+
+    id_medico = Column(Integer, ForeignKey("medicos.id"))
+    id_paciente = Column(Integer, ForeignKey("pacientes.id"))
+
+    medico = relationship("Medicos", back_populates="consultas")
+    paciente = relationship("Pacientes", back_populates="consultas")
+
 Base.metadata.create_all(engine)
 
-# cria a sessão para fazer operações no banco
-Session = sessionmaker(bind=engine)
-session = Session()
 
-# confirma qualquer mudança no banco
-session.commit()
 
-# garante novamente que as tabelas estão criadas
-Base.metadata.create_all(engine)
+
+
