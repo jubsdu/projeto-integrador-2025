@@ -1,8 +1,9 @@
 from dotenv import load_dotenv
 
-from sqlalchemy import Column, Integer, String, Date, Time, Text, create_engine,ForeignKey, create_engine
+from sqlalchemy import Column, Integer, String, Date, Time,ForeignKey, create_engine
 import os
-from sqlalchemy.orm import declarative_base,relationship, sessionmaker
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker, Session
+
 load_dotenv()
 
 
@@ -46,7 +47,20 @@ class Consultas(Base):
 
 Base.metadata.create_all(engine)
 
-
-
-
+with Session(engine) as session:
+    medicos = [
+        Medicos(nome="Dra. Ana Silva", especialidade="Clínica Geral", telefone="(11) 98765-1234", email="ana.silva@hospital.com"),
+        Medicos(nome="Dr. Carlos Mendes", especialidade="Cardiologia", telefone="(21) 98877-2233", email="carlos.mendes@hospital.com"),
+        Medicos(nome="Dr. João Ribeiro", especialidade="Pediatria", telefone="(31) 97766-3344", email="joao.ribeiro@hospital.com"),
+        Medicos(nome="Dra. Fernanda Costa", especialidade="Dermatologia", telefone="(41) 96655-4455", email="fernanda.costa@hospital.com"),
+        Medicos(nome="Dr. Ricardo Lima", especialidade="Ortopedia", telefone="(51) 95544-5566", email="ricardo.lima@hospital.com"),
+        Medicos(nome="Dra. Mariana Alves", especialidade="Ginecologia", telefone="(61) 94433-6677", email="mariana.alves@hospital.com"),
+        Medicos(nome="Dr. Pedro Santos", especialidade="Neurologia", telefone="(71) 93322-7788", email="pedro.santos@hospital.com"),
+        Medicos(nome="Dra. Luiza Martins", especialidade="Endocrinologia", telefone="(81) 92211-8899", email="luiza.martins@hospital.com"),
+        Medicos(nome="Dr. Felipe Torres", especialidade="Urologia", telefone="(91) 91100-9900", email="felipe.torres@hospital.com"),
+        Medicos(nome="Dra. Beatriz Rocha", especialidade="Oftalmologia", telefone="(85) 90099-1122", email="beatriz.rocha@hospital.com"),
+    ]
+    session.add_all(medicos)
+    session.commit()
+    print("10 médicos inseridos com sucesso!")
 
