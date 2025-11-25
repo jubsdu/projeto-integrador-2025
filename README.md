@@ -1,4 +1,4 @@
-# projeto-integrador-2025
+# projeto-integrador-2025 - Programação Orientada a Objetos e Programação para Sistemas de Retaguarda
 Integrantes: Antonio Carlos(n4), Isadora Maria(n20), Júlia Serafim(n25), Luiz Antonio(28) e Nathalia Fernandes(n34)
 
 # Equipe de desenvolvimento
