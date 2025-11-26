@@ -1,6 +1,5 @@
-# Requerimentos para instalação
-
 Flask
 Flask-Cors
 SQLAlchemy
 python-dotenv
+pyodbc
