@@ -248,7 +248,11 @@ footer{
             <input type="text" id="cad-nome" required>
 
             <label>Data de nascimento</label>
-            <input type="date" id="data" min="1850-01-01" - max="2025-11-24" required>
+            <input type="date" id="data" min="1850-01-01" required>
+            <script>
+                const hoje = new Date().toISOString().split("T")[0];
+                document.getElementById("data").setAttribute("max", hoje);
+            </script>
 
             <label>Telefone</label>
             <input type="tel" id="tel" required>
@@ -339,3 +343,4 @@ document.getElementById("form-cadastro").onsubmit = async (e) => {
 
 </body>
 </html>
+
